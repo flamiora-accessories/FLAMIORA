@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /panier.html
-Disallow: /commande.html
-Disallow: /wishlist.html
-Disallow: /admin.html
-
-Sitemap: https://flamiora-accessories.github.io/FLAMIORA/sitemap.xml
-
