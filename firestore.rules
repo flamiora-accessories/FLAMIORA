@@ -1,0 +1,79 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email == 'flamiora.accessoires@gmail.com';
+    }
+
+    match /products/{productId} {
+      allow read: if resource.data.active == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /ensembles/{ensembleId} {
+      allow read: if resource.data.active == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /categories/{categoryId} {
+      allow read: if resource.data.active == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /orders/{orderId} {
+      allow create: if
+        request.resource.data.status == 'pending'
+        && request.resource.data.customer_name is string
+        && request.resource.data.customer_name.size() >= 2
+        && request.resource.data.customer_name.size() <= 120
+        && request.resource.data.customer_phone is string
+        && request.resource.data.customer_phone.size() >= 8
+        && request.resource.data.customer_phone.size() <= 30
+        && request.resource.data.city_id is string
+        && request.resource.data.city_id.size() <= 80
+        && request.resource.data.address is string
+        && request.resource.data.address.size() >= 3
+        && request.resource.data.address.size() <= 300
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0
+        && request.resource.data.items.size() <= 30
+        && request.resource.data.total is number;
+      allow read, update, delete: if isAdmin();
+    }
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /analytics_events/{eventId} {
+      allow read, delete: if isAdmin();
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          'event_name','session_id','page','locale','created_at','product_id','product_name',
+          'category_id','query','target','order_id','quantity','value','cart_count'
+        ])
+        && request.resource.data.event_name in [
+          'page_view','product_view','category_view','search','add_to_cart','remove_from_cart',
+          'cart_view','checkout_open','checkout_submit','checkout_success','wishlist_add',
+          'wishlist_remove','whatsapp_click','contact_click','share_product'
+        ]
+        && request.resource.data.session_id is string
+        && request.resource.data.session_id.size() >= 8
+        && request.resource.data.session_id.size() <= 64
+        && request.resource.data.page is string
+        && request.resource.data.page.size() <= 120
+        && request.resource.data.locale is string
+        && request.resource.data.locale.size() <= 8
+        && request.resource.data.created_at == request.time
+        && (!('product_id' in request.resource.data) || request.resource.data.product_id is string)
+        && (!('product_name' in request.resource.data) || request.resource.data.product_name is string)
+        && (!('category_id' in request.resource.data) || request.resource.data.category_id is string)
+        && (!('query' in request.resource.data) || (request.resource.data.query is string && request.resource.data.query.size() <= 80))
+        && (!('target' in request.resource.data) || request.resource.data.target is string)
+        && (!('order_id' in request.resource.data) || request.resource.data.order_id is string)
+        && (!('quantity' in request.resource.data) || request.resource.data.quantity is number)
+        && (!('value' in request.resource.data) || request.resource.data.value is number)
+        && (!('cart_count' in request.resource.data) || request.resource.data.cart_count is number);
+    }
+  }
+}

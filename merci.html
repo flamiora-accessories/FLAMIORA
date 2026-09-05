@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#fffaf5" name="theme-color"/>
+<title data-i18n="confirm.title">تم إرسال الطلب | FLAMIORA</title>
+<meta content="noindex" name="robots"/>
+<link href="images/favicon.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Cairo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="assets/css/style.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/animations.css">
+</head>
+<body id="top">
+<header class="site-header">
+<div class="container header-inner">
+<a class="logo" href="index.html"><img alt="FLAMIORA" src="images/logo.png"/></a>
+<nav class="main-nav">
+<a data-i18n="nav.home" data-page-target="home" href="index.html"></a>
+<a data-i18n="nav.products" data-page-target="products" href="produits.html"></a>
+</nav>
+<div class="header-actions">
+<div class="lang-switch"><button data-lang="ar">AR</button><button data-lang="fr">FR</button></div>
+</div>
+</div>
+</header>
+<main class="container">
+<div class="confirm-box">
+<div class="icon"><i aria-hidden="true" class="fa-solid fa-check"></i></div>
+<h1 data-i18n="confirm.title"></h1>
+<p data-i18n="confirm.text"></p>
+<a class="btn btn-primary btn-block" href="#" id="confirm-wa-btn" rel="noopener" style="margin-bottom:12px;" target="_blank"><i aria-hidden="true" class="fa-brands fa-whatsapp"></i> <span data-i18n="confirm.waButton"></span></a>
+<a class="btn btn-outline" data-i18n="confirm.backHome" href="index.html"></a>
+</div>
+</main>
+<script>
+  // The WhatsApp message is opened only when the customer taps this real link
+  // herself — never auto-triggered by script. This is the most reliable method
+  // across mobile Safari/Chrome, desktop, and restrictive in-app browsers
+  // (Instagram/Facebook), which routinely block programmatic popups/redirects
+  // but always allow a genuine user click on a normal hyperlink.
+  (function () {
+    var url = sessionStorage.getItem('flm_last_wa_url');
+    var btn = document.getElementById('confirm-wa-btn');
+    if (url && btn) {
+      btn.href = url;
+    } else if (btn) {
+      btn.style.display = 'none';
+    }
+  })();
+</script>
+<footer class="site-footer">
+<div class="analytics-note" data-i18n="footer.analyticsNote"></div>
+<div class="footer-bottom">© 2026 FLAMIORA — <span data-i18n="footer.rights"></span></div>
+</footer>
+<a aria-label="Retour en haut" class="back-to-top" href="#top"><i aria-hidden="true" class="fa-solid fa-arrow-up"></i></a>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/settings-loader.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/products-loader.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/seo-enhancements.js"></script>
+  <script src="assets/js/animations.js"></script>
+</body>
+</html>
