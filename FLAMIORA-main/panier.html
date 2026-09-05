@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#fffaf5" name="theme-color"/>
+<title>سلة المشتريات | FLAMIORA</title>
+<meta content="noindex" name="robots"/>
+<link href="images/favicon.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Cairo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="assets/css/style.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/animations.css">
+</head>
+<body class="has-bottom-nav" data-page="cart" id="top">
+<header class="site-header">
+<div class="container header-inner">
+<button aria-label="Menu" class="mobile-menu-toggle"><i aria-hidden="true" class="fa-solid fa-bars"></i></button>
+<a class="logo" href="index.html"><img alt="FLAMIORA" src="images/logo.png"/></a>
+<nav class="main-nav">
+<a data-i18n="nav.home" data-page-target="home" href="index.html"></a>
+<a data-i18n="nav.categories" data-page-target="products" href="produits.html#categories"></a>
+<a data-i18n="nav.products" data-page-target="products" href="produits.html"></a>
+<a data-i18n="nav.ensembles" data-page-target="ensembles" href="ensembles.html"></a>
+<a data-i18n="nav.about" data-page-target="about" href="a-propos.html"></a>
+<a data-i18n="nav.contact" data-page-target="account" href="contact.html"></a>
+</nav>
+<div class="header-actions">
+<div class="lang-switch"><button data-lang="ar">AR</button><button data-lang="fr">FR</button></div>
+<button aria-label="Search" class="icon-btn search-toggle"><i aria-hidden="true" class="fa-solid fa-magnifying-glass"></i></button>
+<a aria-label="Wishlist" class="icon-btn" href="wishlist.html"><i aria-hidden="true" class="fa-regular fa-heart"></i><span class="badge wishlist-count" hidden="">0</span></a>
+</div>
+</div>
+<div class="header-search">
+<div class="container">
+<div class="search-box">
+<span class="search-icon"><i aria-hidden="true" class="fa-solid fa-magnifying-glass"></i></span>
+<input autocomplete="off" data-i18n-placeholder="search.placeholder" id="global-search" placeholder="ابحثي عن منتج..." type="search"/>
+<div class="search-results" hidden="" id="search-results"></div>
+</div>
+</div>
+</div>
+</header>
+<div class="mobile-drawer">
+<div class="backdrop"></div>
+<div class="panel">
+<div class="panel-head">
+<a class="logo" href="index.html"><img alt="FLAMIORA" src="images/logo.png"/></a>
+<button aria-label="Fermer" class="close-btn">×</button>
+</div>
+<nav>
+<a href="index.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-house"></i></span><span data-i18n="nav.home"></span></a>
+<a href="produits.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-layer-group"></i></span><span data-i18n="nav.categories"></span></a>
+<a href="produits.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-gem"></i></span><span data-i18n="nav.products"></span></a>
+<a href="ensembles.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-gifts"></i></span><span data-i18n="nav.ensembles"></span></a>
+<a href="panier.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-bag-shopping"></i></span><span data-i18n="nav.cart"></span><span class="count cart-count">0</span></a>
+<a href="wishlist.html"><span class="ic"><i aria-hidden="true" class="fa-regular fa-heart"></i></span><span data-i18n="nav.wishlist"></span><span class="count wishlist-count">0</span></a>
+<a href="commande.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-truck"></i></span><span data-i18n="nav.trackOrder"></span></a>
+<a href="contact.html"><span class="ic"><i aria-hidden="true" class="fa-regular fa-user"></i></span><span data-i18n="nav.account"></span></a>
+<hr class="drawer-sep"/>
+<a href="a-propos.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-circle-info"></i></span><span data-i18n="nav.about"></span></a>
+<a href="contact.html"><span class="ic"><i aria-hidden="true" class="fa-regular fa-envelope"></i></span><span data-i18n="nav.contact"></span></a>
+<a class="js-whatsapp-generic" href="#" rel="noopener" target="_blank"><span class="ic"><i aria-hidden="true" class="fa-brands fa-whatsapp"></i></span><span>WhatsApp</span></a>
+<a href="https://www.instagram.com/flamiora_officiel/" rel="noopener" target="_blank"><span class="ic"><i aria-hidden="true" class="fa-brands fa-instagram"></i></span><span>Instagram</span></a>
+<hr class="drawer-sep"/>
+<div class="drawer-lang">
+<span data-i18n="nav.language"></span>
+<div class="lang-switch"><button data-lang="ar">AR</button><button data-lang="fr">FR</button></div>
+</div>
+</nav>
+</div>
+</div>
+<main class="container section">
+<h1 class="section-title" data-i18n="cart.title"></h1>
+<div class="empty-state" hidden="" id="cart-empty">
+<div class="icon"><i aria-hidden="true" class="fa-solid fa-bag-shopping"></i></div>
+<p data-i18n="cart.empty"></p>
+<a class="btn btn-primary" data-i18n="cart.emptyCta" href="produits.html"></a>
+</div>
+<div class="cart-layout" hidden="" id="cart-layout">
+<div class="cart-lines" id="cart-lines"></div>
+<aside class="cart-summary">
+<div class="summary-row"><span data-i18n="cart.subtotal"></span><strong id="summary-subtotal"></strong></div>
+<div class="summary-row">
+<span data-i18n="cart.shipping"></span>
+<strong data-i18n="cart.shippingNote" id="summary-shipping-note"></strong>
+</div>
+<div class="summary-row total"><span data-i18n="cart.total"></span><strong id="summary-total"></strong></div>
+<div class="cart-reassurance">
+<span><i aria-hidden="true" class="fa-solid fa-truck"></i> <span data-i18n="home.trust2title"></span></span>
+<span><i aria-hidden="true" class="fa-solid fa-shield-heart"></i> <span data-i18n="home.trust1title"></span></span>
+</div>
+<button class="btn btn-primary btn-block js-open-checkout" data-i18n="cart.checkout" id="open-checkout" type="button" style="margin-top:16px;"></button>
+<a class="btn btn-outline btn-block" data-i18n="cart.continueShopping" href="produits.html" style="margin-top:10px;"></a>
+</aside>
+</div>
+</main>
+
+<!-- Quick checkout modal: keeps the shopper on the cart page. -->
+<div aria-hidden="true" aria-labelledby="quick-checkout-title" aria-modal="true" class="checkout-modal" id="checkout-modal" role="dialog">
+  <div class="checkout-modal-backdrop" data-close-checkout></div>
+  <div class="checkout-modal-card" role="document">
+    <button aria-label="Close" class="checkout-modal-close" data-close-checkout type="button"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    <div class="checkout-modal-head">
+      <span class="checkout-modal-kicker"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> FLAMIORA</span>
+      <h2 id="quick-checkout-title" data-i18n="checkout.title"></h2>
+      <p data-i18n="checkout.quickIntro"></p>
+    </div>
+
+    <div class="checkout-modal-summary" id="quick-checkout-summary"></div>
+
+    <form class="quick-checkout-form" id="quick-checkout-form" novalidate>
+      <div class="quick-form-grid">
+        <div class="field full">
+          <label for="quick-name" data-i18n="checkout.name"></label>
+          <input id="quick-name" name="name" autocomplete="name" required type="text" data-i18n-placeholder="checkout.namePlaceholder">
+          <span class="error" id="quick-err-name" data-i18n="checkout.required" hidden></span>
+        </div>
+        <div class="field full">
+          <label for="quick-phone" data-i18n="checkout.phone"></label>
+          <input id="quick-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="06 XX XX XX XX" required type="tel">
+          <span class="error" id="quick-err-phone" hidden></span>
+        </div>
+        <div class="field">
+          <label for="quick-city" data-i18n="checkout.city"></label>
+          <select id="quick-city" name="city" required></select>
+          <span class="error" id="quick-err-city" data-i18n="checkout.required" hidden></span>
+        </div>
+        <div class="field">
+          <label for="quick-address" data-i18n="checkout.address"></label>
+          <input id="quick-address" name="address" autocomplete="street-address" required type="text" data-i18n-placeholder="checkout.addressPlaceholder">
+          <span class="error" id="quick-err-address" data-i18n="checkout.required" hidden></span>
+        </div>
+        <div class="field full">
+          <label for="quick-notes" data-i18n="checkout.notes"></label>
+          <textarea id="quick-notes" name="notes" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="quick-checkout-foot">
+        <div class="quick-payment-note"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i><span data-i18n="checkout.paymentNote"></span></div>
+        <a class="btn btn-primary btn-block" id="quick-submit" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> <span data-i18n="checkout.submit"></span></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer">
+<div class="container footer-inner">
+<div class="footer-col">
+<h4>FLAMIORA</h4>
+<p data-i18n="brand.tag"></p>
+<p data-i18n="footer.description"></p>
+</div>
+<div class="footer-col">
+<h4 data-i18n="footer.shop"></h4>
+<a data-i18n="nav.home" href="index.html"></a>
+<a data-i18n="nav.categories" href="produits.html"></a>
+<a data-i18n="nav.products" href="produits.html"></a>
+<a data-i18n="nav.ensembles" href="ensembles.html"></a>
+<a data-i18n="nav.about" href="a-propos.html"></a>
+<a data-i18n="nav.contact" href="contact.html"></a>
+</div>
+<div class="footer-col">
+<h4 data-i18n="footer.categories"></h4>
+<a data-i18n="footer.necklaces" href="produits.html?cat=necklaces"></a>
+<a data-i18n="footer.bracelets" href="produits.html?cat=bracelets"></a>
+<a data-i18n="footer.rings" href="produits.html?cat=rings"></a>
+<a data-i18n="footer.earrings" href="produits.html?cat=earrings"></a>
+<a data-i18n="footer.allJewelry" href="produits.html"></a>
+</div>
+<div class="footer-col">
+<h4 data-i18n="footer.contact"></h4>
+<p><i aria-hidden="true" class="fa-solid fa-location-dot"></i> <span data-i18n="footer.address"></span></p>
+<a href="tel:+212711088984"><i aria-hidden="true" class="fa-solid fa-phone"></i> +212 711-088984</a>
+<a href="mailto:flamiora.accessoires@gmail.com"><i aria-hidden="true" class="fa-solid fa-envelope"></i> flamiora.accessoires@gmail.com</a>
+<a href="https://www.instagram.com/flamiora_officiel/" rel="noopener" target="_blank"><i aria-hidden="true" class="fa-brands fa-instagram"></i> Instagram</a>
+<a class="js-whatsapp-generic" href="#" rel="noopener" target="_blank"><i aria-hidden="true" class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+</div>
+</div>
+<div class="analytics-note" data-i18n="footer.analyticsNote"></div>
+<div class="footer-bottom">© 2026 FLAMIORA — <span data-i18n="footer.rights"></span></div>
+</footer>
+<a aria-label="WhatsApp" class="fab fab-whatsapp js-whatsapp-generic" href="#" rel="noopener" target="_blank"><i aria-hidden="true" class="fa-brands fa-whatsapp"></i><span class="fab-label" data-i18n="contact.whatsappFloat">WhatsApp</span></a>
+<a aria-label="Retour en haut" class="back-to-top" href="#top"><i aria-hidden="true" class="fa-solid fa-arrow-up"></i></a>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/settings-loader.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/products-loader.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/seo-enhancements.js"></script>
+<script>
+  function renderCartLine(line) {
+    const isEnsemble = lineType(line) === 'ensemble';
+    const item = getCartItem(line);
+    if (!item) return '';
+    const name = localized(item, 'name');
+    const href = isEnsemble ? `ensemble.html?slug=${item.slug}` : `produit.html?slug=${item.slug}`;
+    const maxQty = isEnsemble ? 99 : item.stock;
+    return `<div class="cart-line" data-line="${item.id}">
+      <a class="thumb" href="${href}" aria-label="${name}">
+        <span class="product-placeholder" aria-hidden="true"><i class="fa-solid ${isEnsemble ? 'fa-gifts' : 'fa-gem'}"></i></span>
+      </a>
+      <div class="info">
+        <a class="name" href="${href}">${name}${isEnsemble ? ` <small style="opacity:.6">(${t('ensemble.badge')})</small>` : ''}</a>
+        <span class="unit-price">${formatPrice(item.price)}</span>
+        <div class="line-actions">
+          <div class="qty-stepper">
+            <button type="button" data-minus="${item.id}" data-type="${isEnsemble ? 'ensemble' : 'product'}" aria-label="-">−</button>
+            <input type="number" min="1" max="${maxQty}" value="${line.qty}" data-qty="${item.id}" data-type="${isEnsemble ? 'ensemble' : 'product'}">
+            <button type="button" data-plus="${item.id}" data-type="${isEnsemble ? 'ensemble' : 'product'}" aria-label="+">+</button>
+          </div>
+          <button type="button" class="remove-btn" data-remove="${item.id}" data-type="${isEnsemble ? 'ensemble' : 'product'}">${t('cart.remove')}</button>
+        </div>
+      </div>
+      <div class="line-total">${formatPrice(item.price * line.qty)}</div>
+    </div>`;
+  }
+
+  function populateQuickCities() {
+    const select = document.getElementById('quick-city');
+    if (!select || !window.CITIES) return;
+    select.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = t('checkout.selectCity');
+    select.appendChild(placeholder);
+    window.CITIES.forEach((c) => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = localized(c, 'name');
+      select.appendChild(opt);
+    });
+  }
+
+  function renderQuickCheckoutSummary() {
+    const box = document.getElementById('quick-checkout-summary');
+    if (!box) return;
+    const lines = getCart();
+    const subtotal = cartSubtotal();
+    const cityId = document.getElementById('quick-city')?.value || '';
+    const city = getCityById(cityId);
+    const shipping = city ? city.price : 0;
+    const itemText = lines.map((line) => {
+      const p = getCartItem(line);
+      return `<div class="quick-summary-item"><span>${localized(p, 'name')} <b>× ${line.qty}</b></span><strong>${formatPrice(p.price * line.qty)}</strong></div>`;
+    }).join('');
+    box.innerHTML = `${itemText}
+      <div class="quick-summary-divider"></div>
+      <div class="quick-summary-row"><span>${t('cart.subtotal')}</span><strong>${formatPrice(subtotal)}</strong></div>
+      <div class="quick-summary-row"><span>${t('cart.shipping')}</span><strong>${city ? formatPrice(shipping) : t('cart.shippingNote')}</strong></div>
+      <div class="quick-summary-row total"><span>${t('cart.total')}</span><strong>${formatPrice(subtotal + shipping)}</strong></div>`;
+  }
+
+  function openCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    if (!modal || getCart().length === 0) return;
+    populateQuickCities();
+    renderQuickCheckoutSummary();
+    modal.classList.add('open');
+    trackStoreEvent('checkout_open', { cart_count: cartCount(), value: cartSubtotal() });
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('checkout-modal-open');
+    setTimeout(() => document.getElementById('quick-name')?.focus(), 120);
+  }
+
+  function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('checkout-modal-open');
+  }
+
+  function clearQuickCheckoutErrors() {
+    ['name','phone','city','address'].forEach((field) => {
+      const input = document.getElementById(`quick-${field}`);
+      const error = document.getElementById(`quick-err-${field}`);
+      input?.classList.remove('invalid');
+      if (error) error.hidden = true;
+    });
+  }
+
+  function setQuickError(field, message) {
+    const input = document.getElementById(`quick-${field}`);
+    const error = document.getElementById(`quick-err-${field}`);
+    input?.classList.add('invalid');
+    if (error) {
+      error.textContent = message || t('checkout.required');
+      error.hidden = false;
+    }
+    return false;
+  }
+
+  let isSubmittingQuickOrder = false;
+
+  // Un seul tap sur #quick-submit (un vrai <a href>, plus un <button
+  // type="submit">) = navigation réelle vers WhatsApp, sans passer par
+  // merci.html. Même logique et même raison que sur commande.html : ça
+  // reste fiable même sur Safari iOS et les navigateurs intégrés
+  // (Instagram/Facebook).
+  function submitQuickCheckout(e) {
+    const submit = document.getElementById('quick-submit');
+
+    if (isSubmittingQuickOrder) {
+      e.preventDefault();
+      return;
+    }
+
+    clearQuickCheckoutErrors();
+
+    const name = document.getElementById('quick-name').value.trim();
+    const phone = document.getElementById('quick-phone').value.trim();
+    const cityId = document.getElementById('quick-city').value;
+    const address = document.getElementById('quick-address').value.trim();
+    const notes = document.getElementById('quick-notes').value.trim();
+
+    let valid = true;
+
+    if (!name) {
+      setQuickError('name');
+      valid = false;
+    }
+
+    if (!phone) {
+      setQuickError('phone');
+      valid = false;
+    } else if (!validateMoroccanPhone(phone)) {
+      setQuickError('phone', t('checkout.invalidPhone'));
+      valid = false;
+    }
+
+    if (!cityId) {
+      setQuickError('city');
+      valid = false;
+    }
+
+    if (!address) {
+      setQuickError('address');
+      valid = false;
+    }
+
+    if (!valid) {
+      e.preventDefault();
+      return;
+    }
+
+    trackStoreEvent('checkout_submit', {
+      cart_count: cartCount(),
+      value: cartSubtotal()
+    });
+
+    console.log('[FLAMIORA] ORDER_SUBMIT_STARTED');
+
+    let url;
+    try {
+      const message = buildOrderMessage({ name, phone, cityId, address, notes });
+      url = buildWhatsAppUrl(message);
+    } catch (err) {
+      console.error('[FLAMIORA] ORDER_MESSAGE_BUILD_ERROR', { message: err && err.message });
+      e.preventDefault();
+      return;
+    }
+
+    isSubmittingQuickOrder = true;
+
+    // On met à jour le href juste avant que le navigateur suive le lien
+    // (toujours dans le même clic) — pas de e.preventDefault() ici : le
+    // navigateur ouvre WhatsApp (nouvel onglet) tout seul.
+    submit.href = url;
+
+    // Sauvegarde Firestore en arrière-plan, sans bloquer ni retarder la
+    // navigation vers WhatsApp qui vient de partir.
+    saveQuickOrderToFirestore({ name, phone, cityId, address, notes })
+      .then((result) => {
+        if (result && result.success) {
+          console.log('[FLAMIORA] FIRESTORE_ORDER_SUCCESS', { id: result.id });
+        } else {
+          console.error('[FLAMIORA] FIRESTORE_ORDER_ERROR', result ? result.error : 'Unknown error');
+        }
+      })
+      .catch((err) => {
+        console.error('[FLAMIORA] ORDER_SUBMIT_UNEXPECTED_ERROR', { message: err && err.message });
+      });
+
+    localStorage.removeItem(CART_KEY);
+    updateCartBadge();
+    closeCheckoutModal();
+    renderCartPage();
+
+    isSubmittingQuickOrder = false;
+  }
+
+  async function saveQuickOrderToFirestore({ name, phone, cityId, address, notes }) {
+    const city = getCityById(cityId);
+    const lines = getCart();
+    const subtotal = cartSubtotal();
+    const shipping = city ? city.price : 0;
+    const items = lines
+      .map((l) => {
+        const p = getCartItem(l);
+        if (!p) return null;
+        return { product_id: p.id, type: lineType(l), name_ar: p.name_ar, name_fr: p.name_fr, price: p.price, qty: l.qty };
+      })
+      .filter(Boolean);
+    try {
+      const ref = await db.collection('orders').add({
+        customer_name: name,
+        customer_phone: phone,
+        city_id: cityId,
+        city_name: city ? city.name_fr : '',
+        address,
+        notes: notes || '',
+        items,
+        subtotal,
+        shipping_fee: shipping,
+        total: subtotal + shipping,
+        status: 'pending',
+        created_at: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      trackStoreEvent('checkout_success', { order_id: ref.id, cart_count: items.reduce((sum, item) => sum + item.qty, 0), value: subtotal + shipping });
+      return { success: true, id: ref.id };
+    } catch (e) {
+      console.error('[FLAMIORA] FIRESTORE_ORDER_ERROR', { code: e && e.code, message: e && e.message });
+      return { success: false, error: { code: e && e.code, message: e && e.message } };
+    }
+  }
+
+  function renderCartPage() {
+    const lines = getCart();
+    trackStoreEvent('cart_view', { cart_count: cartCount(), value: cartSubtotal() });
+    const empty = document.getElementById('cart-empty');
+    const layout = document.getElementById('cart-layout');
+    if (lines.length === 0) {
+      empty.hidden = false;
+      layout.hidden = true;
+      closeCheckoutModal();
+      return;
+    }
+    empty.hidden = true;
+    layout.hidden = false;
+    document.getElementById('cart-lines').innerHTML = lines.map(renderCartLine).join('');
+    const subtotal = cartSubtotal();
+    document.getElementById('summary-subtotal').textContent = formatPrice(subtotal);
+    document.getElementById('summary-total').textContent = formatPrice(subtotal);
+    document.querySelectorAll('[data-remove]').forEach((btn) => btn.addEventListener('click', () => { removeFromCart(btn.dataset.remove, btn.dataset.type || 'product'); renderCartPage(); }));
+    document.querySelectorAll('[data-minus]').forEach((btn) => btn.addEventListener('click', () => {
+      const type = btn.dataset.type || 'product';
+      const line = getCart().find((l) => l.id === btn.dataset.minus && lineType(l) === type);
+      if (line) { updateCartQty(btn.dataset.minus, Math.max(1, line.qty - 1), type); renderCartPage(); }
+    }));
+    document.querySelectorAll('[data-plus]').forEach((btn) => btn.addEventListener('click', () => {
+      const type = btn.dataset.type || 'product';
+      const line = getCart().find((l) => l.id === btn.dataset.plus && lineType(l) === type);
+      if (line) { updateCartQty(btn.dataset.plus, line.qty + 1, type); renderCartPage(); }
+    }));
+    document.querySelectorAll('[data-qty]').forEach((input) => input.addEventListener('change', () => {
+      updateCartQty(input.dataset.qty, parseInt(input.value, 10) || 1, input.dataset.type || 'product'); renderCartPage();
+    }));
+  }
+
+  FLM_DATA_READY.then(() => {
+    applyLocale();
+    renderCartPage();
+    document.querySelectorAll('.lang-switch button').forEach((btn) => btn.addEventListener('click', () => {
+      setTimeout(() => { applyLocale(); renderCartPage(); if (document.getElementById('checkout-modal')?.classList.contains('open')) { populateQuickCities(); renderQuickCheckoutSummary(); } }, 0);
+    }));
+    document.getElementById('open-checkout')?.addEventListener('click', openCheckoutModal);
+    document.querySelectorAll('[data-close-checkout]').forEach((el) => el.addEventListener('click', closeCheckoutModal));
+    document.getElementById('quick-city')?.addEventListener('change', renderQuickCheckoutSummary);
+    document.getElementById('quick-submit')?.addEventListener('click', submitQuickCheckout);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCheckoutModal(); });
+  });
+</script>
+<nav aria-label="Navigation mobile" class="bottom-nav">
+<div class="bottom-nav-inner">
+<a data-page="home" href="index.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-house"></i></span><span data-i18n="nav.home"></span></a>
+<a data-page="products" href="produits.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-layer-group"></i></span><span data-i18n="nav.categories"></span></a>
+<a class="bottom-cart" data-page="cart" href="panier.html"><span class="ic"><i aria-hidden="true" class="fa-solid fa-bag-shopping"></i></span><span data-i18n="nav.cart"></span><span class="badge cart-count" hidden="">0</span></a>
+<a data-page="wishlist" href="wishlist.html"><span class="ic"><i aria-hidden="true" class="fa-regular fa-heart"></i></span><span data-i18n="nav.wishlist"></span><span class="badge wishlist-count" hidden="">0</span></a>
+<a href="tel:+212711088984"><span class="ic"><i aria-hidden="true" class="fa-solid fa-phone"></i></span><span data-i18n="nav.contact"></span></a>
+</div>
+</nav>
+  <script src="assets/js/animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* FLAMIORA — Elegant motion system */
+:root{--motion-ease:cubic-bezier(.22,1,.36,1);--motion-fast:220ms;--motion-base:520ms;--motion-slow:760ms}
+html{scroll-behavior:smooth}
+body{opacity:0;animation:flamiora-page-in 650ms var(--motion-ease) 80ms forwards}
+@keyframes flamiora-page-in{to{opacity:1}}
+
+/* Header: subtle depth while scrolling */
+.site-header,.adm-topbar{transition:box-shadow 420ms var(--motion-ease),background-color 420ms var(--motion-ease),transform 420ms var(--motion-ease)}
+body.is-scrolled .site-header{box-shadow:0 10px 34px rgba(74,59,43,.08)}
+
+/* Hero entrance */
+.hero-inner{animation:hero-rise 900ms var(--motion-ease) both}
+.hero img,.hero-media img,.editorial-media img{transition:transform 1.1s var(--motion-ease),filter 700ms var(--motion-ease)}
+.hero:hover img,.hero-media:hover img,.editorial-media:hover img{transform:scale(1.025)}
+@keyframes hero-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* Scroll reveals */
+[data-motion-reveal]{opacity:0;transform:translateY(26px);transition:opacity var(--motion-base) var(--motion-ease),transform var(--motion-base) var(--motion-ease);transition-delay:var(--motion-delay,0ms)}
+[data-motion-reveal].is-visible{opacity:1;transform:none}
+[data-motion-reveal="fade"]{transform:none}
+[data-motion-reveal="left"]{transform:translateX(-28px)}
+[data-motion-reveal="right"]{transform:translateX(28px)}
+[data-motion-reveal="scale"]{transform:scale(.96)}
+[data-motion-reveal="scale"].is-visible{transform:scale(1)}
+
+/* Cards and category circles */
+.category-card,.product-card,.card,.insta-card,.cart-line,.cart-reassurance,.adm-card{transition:transform 420ms var(--motion-ease),box-shadow 420ms var(--motion-ease),border-color 320ms ease}
+.category-card:hover,.product-card:hover,.insta-card:hover{transform:translateY(-5px)}
+.category-circle{transition:transform 500ms var(--motion-ease),box-shadow 500ms var(--motion-ease)}
+.category-card:hover .category-circle{transform:scale(1.045);box-shadow:0 12px 30px rgba(116,91,62,.13)}
+
+/* Images */
+.product-card img,.insta-card img,.category-card img{transition:transform 700ms var(--motion-ease),opacity 350ms ease}
+.product-card:hover img,.insta-card:hover img{transform:scale(1.025)}
+
+/* Buttons: premium press + soft ripple */
+.btn,.adm-btn,.close-btn,.checkout-modal-close,.adm-icon-btn{position:relative;overflow:hidden;transition:transform 180ms var(--motion-ease),box-shadow 280ms ease,background-color 280ms ease,border-color 280ms ease}
+.btn:hover,.adm-btn:hover{transform:translateY(-2px)}
+.btn:active,.adm-btn:active,.close-btn:active{transform:translateY(0) scale(.98)}
+.motion-ripple{position:absolute;border-radius:999px;pointer-events:none;transform:scale(0);background:currentColor;opacity:.12;animation:motion-ripple 650ms ease-out}
+@keyframes motion-ripple{to{transform:scale(1);opacity:0}}
+
+/* Floating actions */
+.back-to-top{transition:opacity 280ms ease,transform 420ms var(--motion-ease),box-shadow 280ms ease}
+.back-to-top:hover{transform:translateY(-4px)}
+.bottom-nav{transition:transform 420ms var(--motion-ease),box-shadow 420ms ease}
+.bottom-cart{transition:transform 420ms var(--motion-ease),box-shadow 320ms ease}
+.bottom-cart.motion-bump{animation:cart-bump 600ms var(--motion-ease)}
+@keyframes cart-bump{0%,100%{transform:translateY(0)}35%{transform:translateY(-6px) scale(1.045)}65%{transform:translateY(0) scale(1.015)}}
+.badge.motion-pop{animation:badge-pop 480ms var(--motion-ease)}
+@keyframes badge-pop{0%{transform:scale(1)}45%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* Modal / drawers */
+.backdrop,.checkout-modal-backdrop{transition:opacity 320ms ease,visibility 320ms ease}
+.checkout-modal-card,.drawer,.modal-card{animation:modal-up 520ms var(--motion-ease) both}
+@keyframes modal-up{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+
+/* Form focus: calm, tactile */
+input,select,textarea{transition:border-color 220ms ease,box-shadow 220ms ease,background-color 220ms ease,transform 220ms var(--motion-ease)}
+input:focus,select:focus,textarea:focus{transform:translateY(-1px)}
+
+/* Admin dashboard */
+.adm-card{animation:admin-card-in 650ms var(--motion-ease) both}
+.adm-card:nth-child(2){animation-delay:60ms}.adm-card:nth-child(3){animation-delay:110ms}.adm-card:nth-child(4){animation-delay:160ms}
+@keyframes admin-card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.adm-kpi-grid .adm-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(74,59,43,.09)}
+
+/* Keep motion accessible and light on small screens */
+@media (max-width:700px){
+  [data-motion-reveal]{transform:translateY(16px)}
+  [data-motion-reveal="left"],[data-motion-reveal="right"]{transform:translateY(16px)}
+  .category-card:hover,.product-card:hover,.insta-card:hover{transform:translateY(-2px)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+  body{opacity:1}
+  [data-motion-reveal]{opacity:1!important;transform:none!important}
+}
