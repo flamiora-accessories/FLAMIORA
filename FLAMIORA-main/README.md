@@ -4,7 +4,8 @@ Site vitrine et e-commerce FLAMIORA. HTML/CSS/JavaScript vanilla avec Firebase (
 
 ## Structure
 
-- `index.html`, `produits.html`, `produit.html`, `panier.html`, `commande.html`, `merci.html`, `a-propos.html`, `contact.html`, `404.html`
+- `index.html`, `produits.html`, `produit.html`, `panier.html`, `commande.html`, `a-propos.html`, `contact.html`, `404.html`
+- `merci.html` — ancienne page de remerciement, plus utilisée dans le tunnel de commande (voir « Fonctionnement des commandes » ci-dessous). Conservée telle quelle sur le disque au cas où une ancienne commande/lien externe y pointerait encore, mais rien ne redirige plus vers elle.
 - `admin.html` — panneau d'administration (produits, catégories, commandes)
 - `assets/css/style.css` — styles du site
 - `assets/css/admin.css` — styles du panneau d'administration
@@ -17,13 +18,12 @@ Site vitrine et e-commerce FLAMIORA. HTML/CSS/JavaScript vanilla avec Firebase (
 
 ## Configuration requise avant le premier lancement
 
-1. **Créer le compte administrateur** — Dans la Console Firebase du projet `flamiora-cbb24` → *Authentication* → *Users* → ajoutez un utilisateur avec l'adresse `flamiora.accessoires@gmail.com` et un mot de passe. C'est la seule adresse autorisée par `firestore.rules` et par `admin.js`.
-2. **Vérifier l'adresse e-mail de ce compte** — Les règles Firestore exigent `email_verified == true`. Depuis la Console Firebase, ouvrez le compte créé et marquez l'e-mail comme vérifié (ou envoyez le lien de vérification et cliquez dessus). Sans cette étape, la connexion au panneau `admin.html` sera refusée par les règles de sécurité même avec le bon mot de passe.
-3. **Déployer les règles et index Firestore** :
+1. **Créer le compte administrateur** — Dans la Console Firebase du projet `flamiora-cbb24` → *Authentication* → *Users* → ajoutez un utilisateur avec l'adresse `flamiora.accessoires@gmail.com` et un mot de passe. C'est la seule adresse autorisée par `firestore.rules` et par `admin.js` (aucune vérification d'e-mail requise pour se connecter).
+2. **Déployer les règles et index Firestore** :
    ```
    firebase deploy --only firestore:rules,firestore:indexes
    ```
-4. **Ajouter les catégories et produits réels** dans Firestore via `admin.html` (les données visibles au premier chargement sont des données de secours locales, utilisées uniquement si Firestore est vide).
+3. **Ajouter les catégories et produits réels** dans Firestore via `admin.html` (les données visibles au premier chargement sont des données de secours locales, utilisées uniquement si Firestore est vide).
 
 ## Déploiement du site
 
@@ -37,9 +37,10 @@ Le site fonctionne aussi tel quel sur GitHub Pages (tous les chemins sont relati
 
 ## Fonctionnement des commandes
 
-Le paiement se fait uniquement à la livraison (COD). Au moment de la commande :
-- Le panier est vérifié, puis la commande est enregistrée dans la collection Firestore `orders` (visible et gérable depuis `admin.html` → *Commandes*).
-- Le message récapitulatif est envoyé au commerçant via WhatsApp (numéro configuré dans `assets/js/main.js`), qui reste le canal de confirmation garanti même si l'écriture Firestore échoue (ex. cliente hors ligne).
+Le paiement se fait uniquement à la livraison (COD). Le bouton « Envoyer la commande » (`commande.html` et le checkout rapide de `panier.html`) est un vrai lien `<a>` (pas un redirect JavaScript) : un seul tap l'envoie directement vers WhatsApp dans un nouvel onglet, ce qui reste fiable même dans Safari iOS et les navigateurs intégrés (Instagram/Facebook), qui bloquent souvent les redirections déclenchées par script mais laissent toujours passer un vrai clic sur un lien. Au moment de la commande :
+- Le message récapitulatif part vers WhatsApp (numéro configuré dans `assets/js/main.js`) dès ce tap — c'est le canal de confirmation garanti.
+- En parallèle, sans bloquer ni retarder l'ouverture de WhatsApp, la commande est enregistrée dans la collection Firestore `orders` (visible et gérable depuis `admin.html` → *Commandes*), même si cette écriture échoue (ex. cliente hors ligne).
+- La page reste sur place et affiche une confirmation intégrée (`commande.html`) ou revient simplement à un panier vide (`panier.html`) — il n'y a plus de page « merci » séparée à ouvrir en plus.
 
 
 

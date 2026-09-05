@@ -141,7 +141,7 @@
 
       <div class="quick-checkout-foot">
         <div class="quick-payment-note"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i><span data-i18n="checkout.paymentNote"></span></div>
-        <button class="btn btn-primary btn-block" id="quick-submit" type="submit"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> <span data-i18n="checkout.submit"></span></button>
+        <a class="btn btn-primary btn-block" id="quick-submit" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> <span data-i18n="checkout.submit"></span></a>
       </div>
     </form>
   </div>
@@ -299,144 +299,103 @@
   }
 
   let isSubmittingQuickOrder = false;
-async function submitQuickCheckout(e) {
-  e.preventDefault();
 
-  if (isSubmittingQuickOrder) return;
+  // Un seul tap sur #quick-submit (un vrai <a href>, plus un <button
+  // type="submit">) = navigation réelle vers WhatsApp, sans passer par
+  // merci.html. Même logique et même raison que sur commande.html : ça
+  // reste fiable même sur Safari iOS et les navigateurs intégrés
+  // (Instagram/Facebook).
+  function submitQuickCheckout(e) {
+    const submit = document.getElementById('quick-submit');
 
-  clearQuickCheckoutErrors();
-
-  const name = document.getElementById('quick-name').value.trim();
-  const phone = document.getElementById('quick-phone').value.trim();
-  const cityId = document.getElementById('quick-city').value;
-  const address = document.getElementById('quick-address').value.trim();
-  const notes = document.getElementById('quick-notes').value.trim();
-
-  let valid = true;
-
-  if (!name) {
-    setQuickError('name');
-    valid = false;
-  }
-
-  if (!phone) {
-    setQuickError('phone');
-    valid = false;
-  } else if (!validateMoroccanPhone(phone)) {
-    setQuickError('phone', t('checkout.invalidPhone'));
-    valid = false;
-  }
-
-  if (!cityId) {
-    setQuickError('city');
-    valid = false;
-  }
-
-  if (!address) {
-    setQuickError('address');
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  isSubmittingQuickOrder = true;
-
-  const submit = document.getElementById('quick-submit');
-
-  trackStoreEvent('checkout_submit', {
-    cart_count: cartCount(),
-    value: cartSubtotal()
-  });
-
-  submit.disabled = true;
-  submit.classList.add('is-loading');
-
-  console.log('[FLAMIORA] ORDER_SUBMIT_STARTED');
-
-  try {
-    /*
-     * حفظ الطلب أولاً في Firebase
-     */
-    const result = await saveQuickOrderToFirestore({
-      name,
-      phone,
-      cityId,
-      address,
-      notes
-    });
-
-    /*
-     * إذا فشل Firebase لا نمسح السلة
-     * ولا نعتبر الطلب ناجحًا.
-     */
-    if (!result || !result.success) {
-      console.error(
-        '[FLAMIORA] FIRESTORE_ORDER_ERROR',
-        result ? result.error : 'Unknown error'
-      );
-
-      alert(
-        'Impossible d’enregistrer votre commande pour le moment. ' +
-        'Veuillez vérifier votre connexion et réessayer.'
-      );
-
-      isSubmittingQuickOrder = false;
-      submit.disabled = false;
-      submit.classList.remove('is-loading');
-
+    if (isSubmittingQuickOrder) {
+      e.preventDefault();
       return;
     }
 
-    console.log('[FLAMIORA] FIRESTORE_ORDER_SUCCESS', {
-      id: result.id
+    clearQuickCheckoutErrors();
+
+    const name = document.getElementById('quick-name').value.trim();
+    const phone = document.getElementById('quick-phone').value.trim();
+    const cityId = document.getElementById('quick-city').value;
+    const address = document.getElementById('quick-address').value.trim();
+    const notes = document.getElementById('quick-notes').value.trim();
+
+    let valid = true;
+
+    if (!name) {
+      setQuickError('name');
+      valid = false;
+    }
+
+    if (!phone) {
+      setQuickError('phone');
+      valid = false;
+    } else if (!validateMoroccanPhone(phone)) {
+      setQuickError('phone', t('checkout.invalidPhone'));
+      valid = false;
+    }
+
+    if (!cityId) {
+      setQuickError('city');
+      valid = false;
+    }
+
+    if (!address) {
+      setQuickError('address');
+      valid = false;
+    }
+
+    if (!valid) {
+      e.preventDefault();
+      return;
+    }
+
+    trackStoreEvent('checkout_submit', {
+      cart_count: cartCount(),
+      value: cartSubtotal()
     });
 
-    /*
-     * Firebase نجح.
-     * الآن فقط نبني رابط WhatsApp.
-     */
-    const message = buildOrderMessage({
-      name,
-      phone,
-      cityId,
-      address,
-      notes
-    });
+    console.log('[FLAMIORA] ORDER_SUBMIT_STARTED');
 
-    const url = buildWhatsAppUrl(message);
+    let url;
+    try {
+      const message = buildOrderMessage({ name, phone, cityId, address, notes });
+      url = buildWhatsAppUrl(message);
+    } catch (err) {
+      console.error('[FLAMIORA] ORDER_MESSAGE_BUILD_ERROR', { message: err && err.message });
+      e.preventDefault();
+      return;
+    }
 
-    sessionStorage.setItem('flm_last_wa_url', url);
+    isSubmittingQuickOrder = true;
 
-    /*
-     * الطلب محفوظ بنجاح، لذلك يمكن مسح السلة.
-     */
+    // On met à jour le href juste avant que le navigateur suive le lien
+    // (toujours dans le même clic) — pas de e.preventDefault() ici : le
+    // navigateur ouvre WhatsApp (nouvel onglet) tout seul.
+    submit.href = url;
+
+    // Sauvegarde Firestore en arrière-plan, sans bloquer ni retarder la
+    // navigation vers WhatsApp qui vient de partir.
+    saveQuickOrderToFirestore({ name, phone, cityId, address, notes })
+      .then((result) => {
+        if (result && result.success) {
+          console.log('[FLAMIORA] FIRESTORE_ORDER_SUCCESS', { id: result.id });
+        } else {
+          console.error('[FLAMIORA] FIRESTORE_ORDER_ERROR', result ? result.error : 'Unknown error');
+        }
+      })
+      .catch((err) => {
+        console.error('[FLAMIORA] ORDER_SUBMIT_UNEXPECTED_ERROR', { message: err && err.message });
+      });
+
     localStorage.removeItem(CART_KEY);
     updateCartBadge();
-
     closeCheckoutModal();
-
-    console.log('[FLAMIORA] WHATSAPP_REDIRECT');
-
-    window.location.href = 'merci.html';
-
-  } catch (err) {
-
-    console.error(
-      '[FLAMIORA] ORDER_SUBMIT_UNEXPECTED_ERROR',
-      err
-    );
+    renderCartPage();
 
     isSubmittingQuickOrder = false;
-
-    submit.disabled = false;
-    submit.classList.remove('is-loading');
-
-    alert(
-      'Une erreur est survenue lors de l’envoi de votre commande. ' +
-      'Votre panier a été conservé. Veuillez réessayer.'
-    );
   }
-}
 
   async function saveQuickOrderToFirestore({ name, phone, cityId, address, notes }) {
     const city = getCityById(cityId);
@@ -515,7 +474,7 @@ async function submitQuickCheckout(e) {
     document.getElementById('open-checkout')?.addEventListener('click', openCheckoutModal);
     document.querySelectorAll('[data-close-checkout]').forEach((el) => el.addEventListener('click', closeCheckoutModal));
     document.getElementById('quick-city')?.addEventListener('change', renderQuickCheckoutSummary);
-    document.getElementById('quick-checkout-form')?.addEventListener('submit', submitQuickCheckout);
+    document.getElementById('quick-submit')?.addEventListener('click', submitQuickCheckout);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCheckoutModal(); });
   });
 </script>

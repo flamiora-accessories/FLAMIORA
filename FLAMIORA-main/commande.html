@@ -109,13 +109,19 @@
 </div>
 </div>
 </form>
-<aside class="cart-summary">
+<aside class="cart-summary" id="checkout-summary-box">
 <div class="summary-row"><span data-i18n="cart.subtotal"></span><strong id="summary-subtotal"></strong></div>
 <div class="summary-row"><span data-i18n="cart.shipping"></span><strong id="summary-shipping"></strong></div>
 <div class="summary-row total"><span data-i18n="cart.total"></span><strong id="summary-total"></strong></div>
 <p data-i18n="checkout.paymentNote" style="font-size:0.85rem;color:var(--flm-text-muted);margin:14px 0;"></p>
-<button class="btn btn-primary btn-block" data-i18n="checkout.submit" form="checkout-form" id="submit-btn" type="submit"></button>
+<a class="btn btn-primary btn-block" data-i18n="checkout.submit" href="#" id="submit-btn" rel="noopener" target="_blank"></a>
 </aside>
+<div class="confirm-box" hidden id="checkout-sent" style="width:100%;">
+<div class="icon"><i aria-hidden="true" class="fa-solid fa-check"></i></div>
+<h2 data-i18n="confirm.title" style="margin-bottom:12px;"></h2>
+<p data-i18n="confirm.text"></p>
+<a class="btn btn-outline" data-i18n="confirm.backHome" href="index.html"></a>
+</div>
 </div>
 </main>
 <footer class="site-footer">
@@ -254,10 +260,19 @@
 
     document.getElementById('city').addEventListener('change', updateSummary);
 
-    const form = document.getElementById('checkout-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (isSubmittingOrder) return;
+    const submitBtn = document.getElementById('submit-btn');
+
+    // Un seul tap = navigation réelle vers WhatsApp (pas de redirection JS,
+    // pas de page merci.html). C'est un vrai <a href> cliqué directement par
+    // la cliente : ça reste fiable même sur Safari iOS et les navigateurs
+    // intégrés (Instagram/Facebook), qui bloquent souvent les redirections
+    // déclenchées par script mais laissent toujours passer un vrai clic sur
+    // un lien classique.
+    submitBtn.addEventListener('click', (e) => {
+      if (isSubmittingOrder) {
+        e.preventDefault();
+        return;
+      }
 
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
@@ -282,43 +297,52 @@
       setError('city', 'err-city', cityId === '');
       setError('address', 'err-address', address.length === 0);
 
-      if (!valid) return;
-
-      isSubmittingOrder = true;
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.setAttribute('disabled', 'disabled');
+      if (!valid) {
+        e.preventDefault();
+        return;
+      }
 
       console.log('[FLAMIORA] ORDER_SUBMIT_STARTED');
 
+      let url;
       try {
         const message = buildOrderMessage({ name, phone, cityId, address, notes });
-        const url = buildWhatsAppUrl(message);
+        url = buildWhatsAppUrl(message);
         console.log('[FLAMIORA] WHATSAPP_URL', { length: url.length });
-
-        const result = await saveOrderToFirestore({ name, phone, cityId, address, notes });
-        if (result.success) {
-          console.log('[FLAMIORA] FIRESTORE_ORDER_SUCCESS', { id: result.id });
-        } else {
-          console.error('[FLAMIORA] FIRESTORE_ORDER_ERROR', result.error);
-        }
-
-        sessionStorage.setItem('flm_last_wa_url', url);
-        localStorage.removeItem('flm_cart');
-
-        console.log('[FLAMIORA] WHATSAPP_REDIRECT');
-        window.location.href = 'merci.html';
       } catch (err) {
-        // WhatsApp doit rester joignable même si une étape inattendue échoue
-        // (produit supprimé du panier, Firestore indisponible, etc.).
-        console.error('[FLAMIORA] ORDER_SUBMIT_UNEXPECTED_ERROR', { message: err && err.message });
-        try {
-          const fallbackUrl = buildWhatsAppUrl(buildOrderMessage({ name, phone, cityId, address, notes }));
-          sessionStorage.setItem('flm_last_wa_url', fallbackUrl);
-        } catch (e2) { /* ignore — le lien de secours restera absent sur merci.html */ }
-        isSubmittingOrder = false;
-        submitBtn.removeAttribute('disabled');
-        window.location.href = 'merci.html';
+        console.error('[FLAMIORA] ORDER_MESSAGE_BUILD_ERROR', { message: err && err.message });
+        e.preventDefault();
+        return;
       }
+
+      isSubmittingOrder = true;
+
+      // On met à jour le href juste avant que le navigateur suive le lien
+      // (toujours dans le même clic, donc toujours un vrai tap) — on ne
+      // fait PAS e.preventDefault() ici : le navigateur ouvre WhatsApp
+      // (nouvel onglet) tout seul, sans passer par du JS.
+      submitBtn.href = url;
+
+      // Sauvegarde Firestore + nettoyage panier en arrière-plan, sans
+      // bloquer ni retarder la navigation vers WhatsApp qui vient de partir.
+      saveOrderToFirestore({ name, phone, cityId, address, notes })
+        .then((result) => {
+          if (result.success) {
+            console.log('[FLAMIORA] FIRESTORE_ORDER_SUCCESS', { id: result.id });
+          } else {
+            console.error('[FLAMIORA] FIRESTORE_ORDER_ERROR', result.error);
+          }
+        })
+        .catch((err) => {
+          console.error('[FLAMIORA] ORDER_SUBMIT_UNEXPECTED_ERROR', { message: err && err.message });
+        });
+
+      localStorage.removeItem('flm_cart');
+      updateCartBadge();
+
+      document.getElementById('checkout-summary-box').hidden = true;
+      document.getElementById('checkout-form').hidden = true;
+      document.getElementById('checkout-sent').hidden = false;
     });
   }
 

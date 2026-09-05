@@ -6,8 +6,7 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function isAdmin() {
       return signedIn()
-        && request.auth.token.email == 'flamiora.accessoires@gmail.com'
-        && request.auth.token.email_verified == true;
+        && request.auth.token.email == 'flamiora.accessoires@gmail.com';
     }
 
     match /products/{productId} {

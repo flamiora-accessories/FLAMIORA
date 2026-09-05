@@ -3347,43 +3347,9 @@ document.addEventListener(
         }
 
         /*
-         * الحساب هو حساب الإدارة،
-         * لكن البريد غير موثق.
-         */
-        if (!user.emailVerified) {
-          try {
-            await user.sendEmailVerification();
-          } catch (e) {
-            console.debug(
-              'FLAMIORA: verification email not sent',
-              e
-            );
-          }
-
-          try {
-            await auth.signOut();
-          } catch (signOutError) {
-            console.error(
-              'FLAMIORA verification sign-out error:',
-              signOutError
-            );
-          }
-
-          showLogin();
-
-          if (loginError) {
-            loginError.textContent =
-              t(
-                'admin.login.verifyEmailSent'
-              );
-          }
-
-          return;
-        }
-
-        /*
-         * الحساب صحيح وموثق.
-         * نفتح لوحة الإدارة ونحمّل البيانات.
+         * الحساب صحيح (نفس البريد المسموح به).
+         * نفتح لوحة الإدارة ونحمّل البيانات مباشرة،
+         * بدون اشتراط email_verified (نفس منطق Touba).
          */
         try {
           showShell();
