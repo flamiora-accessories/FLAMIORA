@@ -9,23 +9,28 @@ let adminEvents = [];
 let currentOrderFilter = '';
 let currentOrderSearch = '';
 
-const ANALYTICS_EVENT_LABELS = {
-  page_view: 'Page views',
-  product_view: 'Product views',
-  category_view: 'Category views',
-  search: 'Searches',
-  add_to_cart: 'Add to cart',
-  remove_from_cart: 'Remove from cart',
-  cart_view: 'Cart views',
-  checkout_open: 'Checkout opened',
-  checkout_submit: 'Checkout submitted',
-  checkout_success: 'Orders completed',
-  wishlist_add: 'Wishlist adds',
-  wishlist_remove: 'Wishlist removes',
-  whatsapp_click: 'WhatsApp clicks',
-  contact_click: 'Contact clicks',
-  share_product: 'Shares'
+const ANALYTICS_EVENT_KEYS = {
+  page_view: 'admin.event.pageView',
+  product_view: 'admin.event.productView',
+  category_view: 'admin.event.categoryView',
+  search: 'admin.event.search',
+  add_to_cart: 'admin.event.addToCart',
+  remove_from_cart: 'admin.event.removeFromCart',
+  cart_view: 'admin.event.cartView',
+  checkout_open: 'admin.event.checkoutOpen',
+  checkout_submit: 'admin.event.checkoutSubmit',
+  checkout_success: 'admin.event.checkoutSuccess',
+  wishlist_add: 'admin.event.wishlistAdd',
+  wishlist_remove: 'admin.event.wishlistRemove',
+  whatsapp_click: 'admin.event.whatsappClick',
+  contact_click: 'admin.event.contactClick',
+  share_product: 'admin.event.shareProduct'
 };
+
+function analyticsEventLabel(eventName) {
+  const key = ANALYTICS_EVENT_KEYS[eventName];
+  return key ? t(key) : (eventName || '');
+}
 
 function escapeHtml(v) {
   return String(v == null ? '' : v)
@@ -98,6 +103,29 @@ function openModal(id) {
 
 function closeModal(id) {
   document.getElementById(id)?.classList.remove('open');
+}
+
+function renderAdminForCurrentView() {
+  const activeView =
+    document
+      .querySelector('.adm-view.active')
+      ?.id
+      ?.replace('view-', '') || 'dashboard';
+
+  if (activeView === 'dashboard') loadDashboard();
+  else if (activeView === 'analytics') loadAnalytics();
+  else if (activeView === 'products') renderProductsTable();
+  else if (activeView === 'ensembles') renderEnsemblesTable();
+  else if (activeView === 'categories') renderCategoriesTable();
+  else if (activeView === 'orders') {
+    renderOrderFilters();
+    renderOrdersTable();
+  }
+
+  const categorySelect = document.getElementById('p-category');
+  if (categorySelect) {
+    categorySelect.innerHTML = categoryOptionsHtml();
+  }
 }
 
 function switchView(view) {
@@ -1803,10 +1831,11 @@ function kpi(
   label,
   value,
   icon,
-  note = ''
+  note = '',
+  variant = 'gold'
 ) {
   return `
-    <div class="adm-kpi">
+    <div class="adm-kpi adm-kpi-${escapeHtml(variant)}">
       <div class="adm-kpi-top">
         <span>${escapeHtml(label)}</span>
 
@@ -1876,7 +1905,8 @@ function renderAnalytics() {
         'fa-users',
         t(
           'admin.analytics.uniqueTabs'
-        )
+        ),
+        'purple'
       ),
 
       kpi(
@@ -1884,7 +1914,9 @@ function renderAnalytics() {
           'admin.analytics.pageViews'
         ),
         views,
-        'fa-eye'
+        'fa-eye',
+        '',
+        'blue'
       ),
 
       kpi(
@@ -1894,7 +1926,9 @@ function renderAnalytics() {
         countEvent(
           'product_view'
         ),
-        'fa-gem'
+        'fa-gem',
+        '',
+        'gold'
       ),
 
       kpi(
@@ -1902,7 +1936,9 @@ function renderAnalytics() {
           'admin.analytics.searchCount'
         ),
         searches,
-        'fa-magnifying-glass'
+        'fa-magnifying-glass',
+        '',
+        'teal'
       ),
 
       kpi(
@@ -1910,7 +1946,9 @@ function renderAnalytics() {
           'admin.analytics.adds'
         ),
         adds,
-        'fa-cart-plus'
+        'fa-cart-plus',
+        '',
+        'orange'
       ),
 
       kpi(
@@ -1918,7 +1956,9 @@ function renderAnalytics() {
           'admin.analytics.checkout'
         ),
         starts,
-        'fa-credit-card'
+        'fa-credit-card',
+        '',
+        'blue'
       ),
 
       kpi(
@@ -1929,7 +1969,8 @@ function renderAnalytics() {
         'fa-bag-shopping',
         `${rate}% ${t(
           'admin.analytics.conversion'
-        )}`
+        )}`,
+        'green'
       ),
 
       kpi(
@@ -1937,7 +1978,9 @@ function renderAnalytics() {
           'admin.analytics.whatsapp'
         ),
         whatsapp,
-        'fa-whatsapp'
+        'fa-whatsapp',
+        '',
+        'green'
       )
     ].join('');
   }
@@ -2174,11 +2217,9 @@ function renderAnalytics() {
               <div>
                 <strong>
                   ${escapeHtml(
-                    ANALYTICS_EVENT_LABELS[
+                    analyticsEventLabel(
                       e.event_name
-                    ] ||
-                      e.event_name ||
-                      ''
+                    )
                   )}
                 </strong>
 
@@ -2273,7 +2314,9 @@ async function loadDashboard() {
               )
               .filter(Boolean)
           ).size,
-          'fa-users'
+          'fa-users',
+          '',
+          'purple'
         ),
 
         kpi(
@@ -2285,7 +2328,9 @@ async function loadDashboard() {
               e.event_name ===
               'page_view'
           ).length,
-          'fa-eye'
+          'fa-eye',
+          '',
+          'blue'
         ),
 
         kpi(
@@ -2297,7 +2342,9 @@ async function loadDashboard() {
               e.event_name ===
               'add_to_cart'
           ).length,
-          'fa-cart-plus'
+          'fa-cart-plus',
+          '',
+          'orange'
         ),
 
         kpi(
@@ -2309,7 +2356,9 @@ async function loadDashboard() {
               e.event_name ===
               'checkout_success'
           ).length,
-          'fa-bag-shopping'
+          'fa-bag-shopping',
+          '',
+          'green'
         )
       ];
 
@@ -2748,6 +2797,15 @@ document.addEventListener(
         e
       );
     }
+
+    document
+      .querySelectorAll('.lang-switch button')
+      .forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setLocale(btn.dataset.lang);
+          renderAdminForCurrentView();
+        });
+      });
 
     const loginForm =
       document.getElementById(

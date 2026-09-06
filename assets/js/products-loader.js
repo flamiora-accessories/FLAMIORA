@@ -36,7 +36,13 @@ const SEED_CITIES = [
   { id: 'autre', name_ar: 'مدينة أخرى', name_fr: 'Autre ville', price: 35 },
 ];
 
-window.PRODUCTS = SEED_PRODUCTS.slice();
+// Ces tableaux SEED_* ne servent plus qu'en dernier recours si Firestore est
+// injoignable (ex. coupure réseau). Ils ne sont plus affichés comme des
+// produits/ensembles "normaux" au premier chargement, car ils n'existent pas
+// réellement dans Firestore : impossible de les gérer ou de les supprimer
+// depuis le tableau de bord admin. Tant que Firestore répond (même avec 0
+// produit), c'est TOUJOURS ce qui s'affiche — jamais ces données de secours.
+window.PRODUCTS = [];
 window.CATEGORIES = SEED_CATEGORIES.slice();
 window.CITIES = SEED_CITIES.slice();
 
@@ -45,7 +51,7 @@ const SEED_ENSEMBLES = [
   { id: 'ens_002', slug: 'ensemble-lumiere-doree', name_ar: 'طقم لوميير الذهبي', name_fr: 'Ensemble Lumière Dorée', desc_ar: 'طقم فاخر من قطعتين (سوار وأقراط) بلمسة ذهبية دافئة، هدية مثالية.', desc_fr: 'Duo luxueux (bracelet et boucles) à la teinte dorée chaleureuse, cadeau idéal.', price: 1499, compare_at: 1999, active: true, display_order: 2 },
 ];
 
-window.ENSEMBLES = SEED_ENSEMBLES.slice();
+window.ENSEMBLES = [];
 
 window.FLM_DATA_READY = (async function loadStoreData() {
   try {

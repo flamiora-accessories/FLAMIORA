@@ -2,3 +2,23 @@
 .adm-hero-preview{width:100%;max-width:220px;height:90px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid var(--adm-border);background:#f4e9df}
 @media(max-width:1050px){.adm-kpi-grid{grid-template-columns:repeat(2,1fr)}.adm-sidebar{width:215px;flex-basis:215px}.adm-main{padding:20px}.adm-grid-2{grid-template-columns:1fr}.adm-funnel{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.adm-shell.active{display:block}.adm-sidebar{position:sticky;top:0;z-index:40;width:100%;height:auto;padding:8px;border-inline-end:0;border-bottom:1px solid var(--adm-border);overflow:auto}.adm-side-brand{display:none}.adm-nav{flex-direction:row;min-width:max-content}.adm-nav-link{width:auto;padding:9px 10px;white-space:nowrap}.adm-nav-link span{display:none}.adm-nav-link.logout{margin:0}.adm-main{padding:16px 12px 40px}.adm-topbar{align-items:flex-start}.adm-date-pill{display:none}.adm-kpi-grid{grid-template-columns:1fr 1fr;gap:9px}.adm-kpi{padding:13px}.adm-kpi-value{font-size:1.25rem}.adm-section-head{align-items:flex-start;flex-direction:column}.adm-quick-grid{grid-template-columns:1fr 1fr}.adm-funnel{grid-template-columns:1fr 1fr}.adm-form-grid{grid-template-columns:1fr}.adm-form-grid .full{grid-column:auto}.adm-login-box{padding:28px 20px}.adm-modal{padding:22px 16px}.adm-toolbar-wide .adm-search{max-width:none;flex:1}.adm-toolbar-wide select{flex:1}.adm-table{min-width:680px}}
+/* === FLAMIORA admin — polish visuel (couleurs KPI + sélecteur de langue) === */
+.adm-kpi{transition:transform .15s ease,box-shadow .15s ease;border-inline-start:3px solid transparent}
+.adm-kpi:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(90,66,46,.12)}
+.adm-kpi-purple{border-inline-start-color:#8a6fb5}
+.adm-kpi-purple .adm-kpi-icon{background:#efe9f8;color:#7a5aa8}
+.adm-kpi-blue{border-inline-start-color:#5d84c4}
+.adm-kpi-blue .adm-kpi-icon{background:#e8eff9;color:#4a6fa8}
+.adm-kpi-teal{border-inline-start-color:#3f9e94}
+.adm-kpi-teal .adm-kpi-icon{background:#e3f4f2;color:#2f8078}
+.adm-kpi-orange{border-inline-start-color:#d98a3d}
+.adm-kpi-orange .adm-kpi-icon{background:#fbedd9;color:#b56f26}
+.adm-kpi-green{border-inline-start-color:#4d9161}
+.adm-kpi-green .adm-kpi-icon{background:#e6f3e8;color:#3f7a50}
+.adm-kpi-gold{border-inline-start-color:var(--adm-accent)}
+.adm-nav-link.active{border-inline-start:3px solid var(--adm-accent);padding-inline-start:9px}
+.lang-switch{display:inline-flex;border:1px solid var(--adm-border);border-radius:999px;overflow:hidden;background:var(--adm-panel-2)}
+.lang-switch button{border:0;background:transparent;color:var(--adm-muted);font-weight:800;font-size:.72rem;padding:6px 12px;cursor:pointer;line-height:1}
+.lang-switch button.active{background:var(--adm-accent);color:#fff}
+.adm-login-lang{position:absolute;top:18px;inset-inline-end:18px}
+.adm-login-screen{position:relative}

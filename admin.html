@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body id="top">
-<div class="adm-login-screen" id="login-screen"><div class="adm-login-box"><div class="adm-brand">FLAMIORA</div><p class="adm-login-kicker">Administration</p><h1 data-i18n="admin.login.title"></h1>
+<div class="adm-login-screen" id="login-screen"><div class="lang-switch adm-login-lang"><button data-lang="ar">AR</button><button data-lang="fr">FR</button></div><div class="adm-login-box"><div class="adm-brand">FLAMIORA</div><p class="adm-login-kicker">Administration</p><h1 data-i18n="admin.login.title"></h1>
 <form id="login-form"><div class="adm-field"><label data-i18n="admin.login.email"></label><input id="login-email" autocomplete="username" required type="email"></div>
 <div class="adm-field"><label data-i18n="admin.login.password"></label><input id="login-password" autocomplete="current-password" required type="password"></div>
 <button class="adm-btn adm-btn-primary adm-btn-block" data-i18n="admin.login.submit" type="submit"><i class="fa-solid fa-arrow-right-to-bracket"></i></button><p class="adm-error" id="login-error"></p></form></div></div>
@@ -23,7 +23,7 @@
 <a class="adm-nav-link" data-view="orders" href="#orders"><i class="fa-solid fa-bag-shopping"></i><span data-i18n="admin.nav.orders"></span></a>
 <a class="adm-nav-link" data-view="settings" href="#settings"><i class="fa-solid fa-sliders"></i><span data-i18n="admin.nav.settings"></span></a>
 </nav><button class="adm-nav-link logout" id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="admin.nav.logout"></span></button></aside>
-<main class="adm-main"><header class="adm-topbar"><div><span class="adm-eyebrow">FLAMIORA</span><h1 id="view-heading">Dashboard</h1></div><div class="adm-top-actions"><button class="adm-icon-btn" id="refresh-admin" title="Refresh"><i class="fa-solid fa-rotate"></i></button><div class="adm-date-pill" id="admin-date"></div></div></header>
+<main class="adm-main"><header class="adm-topbar"><div><span class="adm-eyebrow">FLAMIORA</span><h1 id="view-heading">Dashboard</h1></div><div class="adm-top-actions"><div class="lang-switch"><button data-lang="ar">AR</button><button data-lang="fr">FR</button></div><button class="adm-icon-btn" id="refresh-admin" title="Refresh"><i class="fa-solid fa-rotate"></i></button><div class="adm-date-pill" id="admin-date"></div></div></header>
 
 <section class="adm-view active" id="view-dashboard"><div class="adm-section-head"><div><h2 data-i18n="admin.dashboard.title"></h2><p data-i18n="admin.dashboard.subtitle"></p></div><button class="adm-btn adm-btn-outline" data-go-view="analytics"><i class="fa-solid fa-chart-pie"></i><span data-i18n="admin.dashboard.openAnalytics"></span></button></div>
 <div class="adm-kpi-grid" id="dashboard-kpis"></div><div class="adm-grid-2"><div class="adm-card"><div class="adm-card-head"><h3 data-i18n="admin.dashboard.ordersToday"></h3><span class="adm-muted" id="dash-order-total"></span></div><div id="dash-orders-list" class="adm-list"></div></div><div class="adm-card"><div class="adm-card-head"><h3 data-i18n="admin.dashboard.topProducts"></h3><span class="adm-muted" data-i18n="admin.dashboard.last7"></span></div><div id="dash-top-products" class="adm-list"></div></div></div>
