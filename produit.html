@@ -96,7 +96,7 @@
 </div>
 <div class="product-detail">
 <div class="product-gallery">
-<div class="main-image"><span aria-hidden="true" class="detail-placeholder"><i class="fa-solid fa-gem"></i></span></div>
+<div class="main-image" id="product-main-image"><span aria-hidden="true" class="detail-placeholder"><i class="fa-solid fa-gem"></i></span></div>
 </div>
 <div class="product-info">
 <h1 id="product-name"></h1>
@@ -230,6 +230,13 @@
     document.getElementById('crumb-product').textContent = name;
 
     document.getElementById('product-name').textContent = name;
+
+    const mainImageEl = document.getElementById('product-main-image');
+    if (mainImageEl) {
+      mainImageEl.innerHTML = product.image
+        ? `<img src="${product.image}" alt="${name}" loading="lazy" decoding="async"/>`
+        : `<span aria-hidden="true" class="detail-placeholder"><i class="fa-solid fa-gem"></i></span>`;
+    }
     
     const breadcrumbEl = document.getElementById('breadcrumb-jsonld');
     if (breadcrumbEl) breadcrumbEl.textContent = JSON.stringify({'@context':'https://schema.org','@type':'BreadcrumbList','itemListElement':[
