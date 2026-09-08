@@ -256,7 +256,7 @@ function searchProducts(query, limit = 8) {
 
 function renderSearchResultItem(p) {
   return `<a class="search-item" href="produit.html?slug=${p.slug}">
-    <span class="search-placeholder" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>
+    ${p.image ? `<img src="${p.image}" alt="${localized(p, 'name')}" loading="lazy" decoding="async"/>` : `<span class="search-placeholder" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>`}
     <div class="info">
       <span class="name">${localized(p, 'name')}</span>
       <span class="price">${formatPrice(p.price)}</span>

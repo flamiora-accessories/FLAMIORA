@@ -171,6 +171,12 @@ function switchView(view) {
 }
 
 function categoryOptionsHtml() {
+  if (!adminCategories.length) {
+    return `<option value="" disabled selected>${escapeHtml(
+      t('admin.form.noCategories')
+    )}</option>`;
+  }
+
   return adminCategories
     .map(
       c =>

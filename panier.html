@@ -205,7 +205,7 @@
     const maxQty = isEnsemble ? 99 : item.stock;
     return `<div class="cart-line" data-line="${item.id}">
       <a class="thumb" href="${href}" aria-label="${name}">
-        <span class="product-placeholder" aria-hidden="true"><i class="fa-solid ${isEnsemble ? 'fa-gifts' : 'fa-gem'}"></i></span>
+        ${item.image ? `<img src="${item.image}" alt="${name}" loading="lazy" decoding="async"/>` : `<span class="product-placeholder" aria-hidden="true"><i class="fa-solid ${isEnsemble ? 'fa-gifts' : 'fa-gem'}"></i></span>`}
       </a>
       <div class="info">
         <a class="name" href="${href}">${name}${isEnsemble ? ` <small style="opacity:.6">(${t('ensemble.badge')})</small>` : ''}</a>

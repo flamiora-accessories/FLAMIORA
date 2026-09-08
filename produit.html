@@ -185,7 +185,7 @@
       ${newBadge}
       <button class="wish-btn" data-wish="${p.id}" aria-label="Wishlist"><i class="fa-regular fa-heart" aria-hidden="true"></i></button>
       <a class="thumb" href="produit.html?slug=${p.slug}" aria-label="${localized(p, 'name')}">
-        <span class="product-placeholder" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>
+        ${p.image ? `<img src="${p.image}" alt="${localized(p, 'name')}" loading="lazy" decoding="async"/>` : `<span class="product-placeholder" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>`}
       </a>
       <div class="body">
         ${stockBadge(p)}
